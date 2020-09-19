@@ -1,0 +1,43 @@
+$navbar_color :#00b7c2;
+$link_color : #fff;
+
+.navbar{
+    background-color: $navbar_color;
+    padding:0.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 5px;
+
+
+&__links{
+    display: flex;
+    width:60rem;
+    justify-content: flex-end;
+    margin-right: 3rem;
+}
+
+&__link{
+    color:$link_color;
+    padding: 0.7rem 1.5rem;
+    text-decoration: none;
+    align-content: center;
+    font-weight: 600;
+    font-size: 1.8rem;
+    border:none;
+    outline: none;
+}
+
+}
+
+.active{
+    border-bottom: 2px solid #fff;
+}
+
+.icon{
+
+    height:1.5rem;
+    width:1.5rem;
+    font-weight: bold;
+    fill:#fff;
+}

@@ -1,0 +1,54 @@
+$label_color :#212121;
+$animation-color:#71c9ce;
+
+.input{
+    display: flex;
+    flex-direction: column;
+    margin: 1.8rem;
+    position: relative;
+
+
+    &__field{
+    
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 0.2rem solid #ccc;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.5rem;
+       
+    }
+
+    &__label{
+        position: absolute;
+        font-size: 1.45rem;
+        padding-left: 0.3rem;
+        font-weight: 500;
+        color:$label_color;
+        top:-0.8rem;
+        transition: all 0.166s ease-in;
+        
+    }
+
+    &__field:focus +&__label{
+        color: #71c9ce;
+        padding-left: 0;
+        font-size: 1.2rem;
+        top:-2.5rem;
+    }
+
+    &__field:focus{
+        border-color: #71c9ce;
+        border-width: 0.245rem;
+       
+    }
+}
+
+.move{
+
+    color: #71c9ce;
+    padding-left: 0;
+    font-size: 1.2rem;
+    top:-2.5rem;
+
+}
