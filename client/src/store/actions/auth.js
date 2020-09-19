@@ -38,7 +38,7 @@ return dispatch => {
 
     let decodedToken = jwtDecode(newToken);
     let expirationTime = decodedToken.exp * 1000;
-    let expirationDate = new Date(expirationTime - 30000);
+    let expirationDate = new Date(expirationTime - 300000);
 
     localStorage.setItem("token" , newToken);
     localStorage.setItem("expirationDate", expirationDate);
@@ -117,7 +117,7 @@ export const auth = (email, password, username, contactNo, props) => {
         let decodedToken = jwtDecode(token);
         let expirationTime = decodedToken.exp * 1000;
       
-        let expirationDate = new Date(expirationTime - 30000);
+        let expirationDate = new Date(expirationTime - 300000);
         let username = res.data.username;
         let contactNo = res.data.contactNo;
 
