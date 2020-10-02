@@ -28,7 +28,7 @@ const generateRefreshToken = id => {
 
 exports.signUp = async (req, res, next) => {
   let email = req.body.email;
-  let phoneNo = req.body.phoneNo;
+  let contactNo = req.body.phoneNo;
   let password = req.body.password;
   let username = req.body.username;
 
@@ -41,7 +41,7 @@ exports.signUp = async (req, res, next) => {
       
     }
 
-    user = await User.findOne({ phoneNo: phoneNo });
+    user = await User.findOne({ contactNo:  contactNo });
     if (user) {
       let err = new Error("PhoneNo already exist");
       err.status = 400;
@@ -53,7 +53,7 @@ exports.signUp = async (req, res, next) => {
     let newUser = new User({
       email: email,
       password: hashPass,
-      phoneNo:phoneNo,
+      contactNo:contactNo,
       username:username
     });
 
@@ -66,7 +66,7 @@ exports.signUp = async (req, res, next) => {
       token: token,
       refreshToken : refreshToken,
       username:newuser.username,
-      contactNo:newuser.phoneNo
+      contactNo:newuser.contactNo
     });
   } catch (err) {
     next(err);
@@ -102,7 +102,7 @@ exports.login = async (req, res, next) => {
       token: token,
       refreshToken:refreshToken,
       username:foundUser.username,
-      contactNo:foundUser.phoneNo
+      contactNo:foundUser.contactNo
     });
   } catch (err) {
     next(err);

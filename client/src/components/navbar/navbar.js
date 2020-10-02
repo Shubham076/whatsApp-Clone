@@ -9,10 +9,10 @@ const navbar = (props) => {
             <div className={classes.navbar__links}>
 
                 
-            <Link  className={classes.navbar__link} exact type="low-protected" activeClassName={classes.active} to="/" value="Login"/>
-            <Link className={classes.navbar__link} type = "low-protected" activeClassName={classes.active} to="/signUp" value="Sign Up" />
-            <Link  className={classes.navbar__link} type = "protected" activeClassName={classes.active} to="/logout" value="Logout"/>
-            <Link  className={classes.navbar__link} type = "protected" activeClassName={classes.active} to="/home" value="Home" />
+            <Link  type="low-protected"  to="/" value="Login"/>
+            <Link  type="low-protected" to="/signUp" value="Sign Up" />
+            <Link  type = "protected" to="/logout" value="Logout"/>
+            <Link  type = "protected"  to="/home" value="Home" />
 
 
                 { props.authenticated ? <a href="#"  className={classes.navbar__link}>{props.username}</a>:null}

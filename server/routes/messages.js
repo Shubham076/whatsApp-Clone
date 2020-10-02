@@ -1,12 +1,8 @@
 const express = require("express");
-app = express();
 router = express.Router();
 const isAuth = require("../middleware/auth")
+const {addMessage} = require("../controllers/messages")
 
-router.get("/test" , isAuth , (req,res) => {
-    return res.json({
-        message:"Working"
-    })
-})
+router.post("/addMessage",isAuth, addMessage);
 
 module.exports = router;

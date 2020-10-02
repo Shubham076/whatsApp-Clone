@@ -1,0 +1,26 @@
+$bg-color:#dadbd3;
+$body-color:#ededed;
+
+.home{
+    background-color: $bg-color;
+    height:90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__body{
+        display: flex;
+        height: 80vh;
+        width: 85vw;
+        overflow-x: auto;
+        background-color: $body-color;
+        box-shadow: 1.3rem 2rem 2.5rem rgba(#000 , 0.3),
+                    0.3rem 0.5rem 1rem rgba(#ccc , 0.6);
+    }
+}
+
+@media screen and (max-width:750px){
+    .home__body{
+        width: 100vw;
+    }
+}

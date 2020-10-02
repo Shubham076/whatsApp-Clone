@@ -7,7 +7,9 @@ import { Provider } from "react-redux";
 import { applyMiddleware, createStore, compose, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import AuthReducer from "./store/reducers/authReducer";
+import SocketReducer from "./store/reducers/socket"
 import * as serviceWorker from "./serviceWorker";
+import chatRoomReducer from "./store/reducers/chatRooms";
 
 const logger = (store) => {
   return (next) => {
@@ -24,6 +26,8 @@ const composeEnhancers =
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
+  socket:SocketReducer,
+  chatRooms:chatRoomReducer
 });
 
 const store = createStore(

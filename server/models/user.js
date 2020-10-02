@@ -1,5 +1,6 @@
 
-const mongoose  = require("mongoose")
+const mongoose  = require("mongoose");
+const Room  = require("./room")
 
 const userSchema = new mongoose.Schema({
     email:{
@@ -10,14 +11,15 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    phoneNo:{
-        type:Number,
+    contactNo:{
+        type:String,
         required:true
     },
     username:{
         type:String,
         required:true
-    }
+    },
+    rooms:[{type:mongoose.Schema.Types.ObjectId , ref:"Room"}]
 })
 
 module.exports = mongoose.model("User",userSchema)

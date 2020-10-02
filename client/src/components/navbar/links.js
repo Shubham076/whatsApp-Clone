@@ -1,21 +1,21 @@
 import React from 'react'
-import classes from "./navbar.module.scss"
 import {NavLink} from "react-router-dom"
 import {connect} from "react-redux"
+import classes from "./navbar.module.scss"
 
 
 const Links = (props) => {
-    const {type , value} = props;
+    const {type , value ,to} = props;
    switch(type){
 
     case "protected":
-        return  props.authenticated ? <NavLink {...props}>{value}</NavLink> : null
+        return  props.authenticated ? <NavLink  activeClassName={classes.active} className={classes.navbar__link} to={to}>{value}</NavLink> : null
 
     case "not-protected":
-        return <NavLink {...props}>{value}</NavLink>
+        return <NavLink activeClassName={classes.active}   className={classes.navbar__link} to={to}>{value}</NavLink>
 
     case "low-protected":
-        return !props.authenticated ? <NavLink {...props}>{value}</NavLink>:null
+        return !props.authenticated ? <NavLink exact={to === "/"} activeClassName={classes.active} className={classes.navbar__link} to={to} >{value}</NavLink>:null
 
 
     default: return null;

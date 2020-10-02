@@ -26,11 +26,12 @@ function App(props) {
 
 
   return (
-    <div className="App">
-      <Layout>
-        {routes}
-      </Layout>
-    </div>
+      <div className="App">
+        <Layout>
+          {routes}
+        </Layout>
+      </div>
+    
   );
 }
 

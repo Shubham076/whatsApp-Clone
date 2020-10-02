@@ -1,14 +1,24 @@
 let io;
-let Socket;
 module.exports = {
     init: httpServer => {
         io = require("socket.io")(httpServer);
         io.on('connection' , socket => {
-            console.log("A user connected")
-            Socket  = socket
-            socket.on('disconnect' , ()=>{
-                console.log("A user disconnected")
+            id = socket.handshake.query.id;
+            socket.join(id);
+
+            socket.on('sendMessage',data => {
+                socket.broadcast.to(data.message.receiver).emit('newMessage' ,{message:data.message});
             })
+
+            socket.on('startTyping',data => {
+                socket.broadcast.to(data.typing.receiver).emit('typing',{typing:true,roomId:data.typing.roomId})
+            })
+
+            socket.on('stopTyping',data => {
+                socket.broadcast.to(data.typing.receiver).emit('typing',{typing:false,roomId:data.typing.roomId})
+            })
+
+
 
         })
         return io;
@@ -21,12 +31,4 @@ module.exports = {
 
         return io;
     },
-
-    getSocket : () => {
-        if(!Socket){
-            throw new Error("Socket is not initialized")
-        }
-
-        return Socket;
-    }
 }

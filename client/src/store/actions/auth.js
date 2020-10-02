@@ -170,3 +170,9 @@ export const clear = () => {
     type: actionTypes.CLEAR_ERRORS,
   };
 };
+
+export const remove_selected_room = () => {
+  return{
+    type:actionTypes.REMOVE_SELECTED_ROOM
+  }
+}

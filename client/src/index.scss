@@ -11,10 +11,62 @@ body{
   font-weight: 400;
   padding:1rem;
   box-sizing: border-box;
-  line-height: 1.7;
   color:$color-grey-dark;
 }
 
 html{
   font-size: 62.5%;  //1rem = 10px;
+}
+
+.icon{
+  height:3.5rem;
+  width:3.5rem;
+  display: inline-block;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+
+  &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send{
+    height: 2rem;
+    width:2rem;
+    margin-right: 1rem;
+    fill:#212121;
+    transform: scale(1);
+    transition: transform 0.2s ease-in;
+
+    &:active{
+      transform: scale(1.5);
+    }
+  
+  }
+
+  &__chat{
+    margin-right: 0.4rem;
+  }
+
+  &__attach, &__emoji , &__send{
+    fill:#757575;
+}
+
+&__send{
+  height: 3rem;
+  width: 3rem;
+}
+
+  &__search{
+    height: 1.5rem;
+    width:1.5rem;
+    stroke-width: 0.2rem;
+    fill:#757575;
+  }
+}
+
+.not_found{
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50% , -50%);
 }

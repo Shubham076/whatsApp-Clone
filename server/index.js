@@ -7,9 +7,9 @@ const express = require("express"),
       mongoose = require("mongoose")
       port = process.env.PORT || 4000;
       app = express();
-const iox = require("./socket")
 const authRoutes = require("./routes/auth")
-const testRoutes = require("./routes/test")
+const roomRoutes = require("./routes/room")
+const messageRoutes = require("./routes/messages")
 require("dotenv").config();
 
 
@@ -21,7 +21,8 @@ app.use(bodyParser.json());
 
 // routes
 app.use(authRoutes);
-app.use(testRoutes);
+app.use(roomRoutes);
+app.use(messageRoutes)
 
 app.use((req,res,next) => {
     let error  = new Error("Not found");
@@ -29,9 +30,13 @@ app.use((req,res,next) => {
     next(error);
 })
 
+// global error handler
 app.use((err,req,res,next) => {
     return res.status(err.status || 500).json({message:err.message || "Something went wrong"})
 })
+
+// db triggers
+const db = require("./triggers/room").init();
 
 mongoose.connect(process.env.DB , {useNewUrlParser:true , useUnifiedTopology:true})
 .then(() => {

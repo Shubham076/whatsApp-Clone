@@ -30,7 +30,7 @@ $animation-color:#71c9ce;
         
     }
 
-    &__field:focus +&__label{
+    &__field:focus + &__label{
         color: #71c9ce;
         padding-left: 0;
         font-size: 1.2rem;
