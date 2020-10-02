@@ -3,6 +3,8 @@ import "./sidebarChat.scss";
 import Popup from "../../popup/Popup";
 import { connect } from "react-redux";
 import { select_room } from "../../../store/actions/index";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 class SidebarChat extends Component {
   state = {
@@ -49,6 +51,23 @@ class SidebarChat extends Component {
   };
 
   render() {
+    dayjs.extend(relativeTime);
+
+        // for last seen
+        let lastSeen;
+        if(this.props.messages){
+
+          let Messages = [...this.props.messages];
+          for(let message of Messages.reverse()){
+            if(message.sender === localStorage.getItem('contactNo')){
+              lastSeen = dayjs(message.createdAt).fromNow();
+              break;
+            }
+          }
+        }
+           
+    
+
     return (
       <>
         <Popup
@@ -77,7 +96,7 @@ class SidebarChat extends Component {
                   </p>
                 ) : (
                   <p>
-                    12 minutes ago<span className="unread_message_count">2</span>
+                    Last seen {lastSeen}<span className="unread_message_count">2</span>
                   </p>
                 )}
               </div>

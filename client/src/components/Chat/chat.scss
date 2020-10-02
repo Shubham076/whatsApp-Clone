@@ -46,6 +46,7 @@
         background-size: cover;
         padding: 3rem;
         overflow-y: auto;
+        position: relative;
     }
 
     &__footer{
@@ -89,6 +90,7 @@
         max-width: 50%;
         border-radius: 1rem;
         font-weight: 600;
+        position: relative;
         margin-bottom: 3.5rem;
         color:#212121;
     }
@@ -134,4 +136,20 @@
     &__text{
         font-size: 2rem;
     }
+}
+
+.blockdate{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.blockdate span{
+    padding:1rem;
+    background-color: #e1f2fb;
+    color:#212121;
+    border-radius: 7px;
+    display: inline-block;
+    margin-bottom: 1.6rem;
 }

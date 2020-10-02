@@ -16,7 +16,7 @@ import { createObjectId } from "mongodb-objectid";
 import axios from "../../server";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import localizedFormat from "dayjs/plugin/localizedFormat"
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export class Chat extends Component {
   constructor(props) {
@@ -28,8 +28,8 @@ export class Chat extends Component {
     seed: null,
     message: "",
     messages: [],
-    typing:false,
-    uniqueDates:[]
+    typing: false,
+    uniqueDates: [],
   };
 
   componentDidMount() {
@@ -50,11 +50,14 @@ export class Chat extends Component {
         this.props.updateCount(data.message.roomId);
       });
 
-      this.props.io.on('typing',data => {
-        if(this.props.currentRoom && this.props.currentRoom.id === data.roomId){
-            this.setState({typing:data.typing})
+      this.props.io.on("typing", (data) => {
+        if (
+          this.props.currentRoom &&
+          this.props.currentRoom.id === data.roomId
+        ) {
+          this.setState({ typing: data.typing });
         }
-      })
+      });
     }, 200);
   }
 
@@ -67,26 +70,6 @@ export class Chat extends Component {
       this.chatRef.current.scrollIntoView({ behaviour: "smooth" });
     }
   };
-
-  getUniqueDates = async () => {
-    let uniqueDates = []
-    if(this.props.roomSelected === true){
-      for(let message of this.props.currentRoom.messages){
-        if(await !uniqueDates.includes(message.date)){
-          uniqueDates.push({
-            date:message.date,
-            createdAt:message.createdAt
-          })
-
-          console.log(uniqueDates.includes('2 October 2020'))
-        }
-
-      }
-      return uniqueDates
-    }
-}
-
-  
 
   handleChange = (e) => {
     this.setState({ message: e.target.value });
@@ -109,8 +92,7 @@ export class Chat extends Component {
       read: false,
     };
 
-    newMessage.date = dayjs(newMessage.createdAt).format('D MMMM YYYY')
-      
+    newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
 
     this.props.addMessage(newMessage);
     this.props.addMessageToRoom(newMessage);
@@ -130,45 +112,72 @@ export class Chat extends Component {
   sendTypingIndication = (e) => {
     let room = this.props.currentRoom;
 
-    if(e.key === 'Enter'){
-      this.props.io.emit('stopTyping',{
+    if (e.key === "Enter") {
+      this.props.io.emit("stopTyping", {
         typing: {
-          receiver: room.createdBy === localStorage.getItem("contactNo")
-            ? room.users[1].contactNo
-            : room.users[0].contactNo,
-          roomId:room.id
-        },
-      })
-    }
-
-    else if(this.state.message.length <= 1){
-      this.props.io.emit('stopTyping',{
-        typing: {
-          receiver: room.createdBy === localStorage.getItem("contactNo")
-            ? room.users[1].contactNo
-            : room.users[0].contactNo,
-            roomId:room.id
-        },
-      })
-    }
-    else{
-    setTimeout(() => {
-      this.props.io.emit("startTyping", {
-        typing: {
-          receiver: room.createdBy === localStorage.getItem("contactNo")
-            ? room.users[1].contactNo
-            : room.users[0].contactNo,
-            roomId:room.id
+          receiver:
+            room.createdBy === localStorage.getItem("contactNo")
+              ? room.users[1].contactNo
+              : room.users[0].contactNo,
+          roomId: room.id,
         },
       });
-    }, 200)}
+    } else if (this.state.message.length <= 1) {
+      this.props.io.emit("stopTyping", {
+        typing: {
+          receiver:
+            room.createdBy === localStorage.getItem("contactNo")
+              ? room.users[1].contactNo
+              : room.users[0].contactNo,
+          roomId: room.id,
+        },
+      });
+    } else {
+      setTimeout(() => {
+        this.props.io.emit("startTyping", {
+          typing: {
+            receiver:
+              room.createdBy === localStorage.getItem("contactNo")
+                ? room.users[1].contactNo
+                : room.users[0].contactNo,
+            roomId: room.id,
+          },
+        });
+      }, 200);
+    }
   };
 
   render() {
-    // dayjs.extend(relativeTime);
-    dayjs.extend(localizedFormat)
-    let dates = this.getUniqueDates();
+    dayjs.extend(relativeTime);
+    dayjs.extend(localizedFormat);
+    let now = dayjs().format('D MMMM YYYY');
+    console.log(now)
 
+
+    // for showing timestamps between messages
+    let map = new Map();
+    if (this.props.roomSelected === true) {
+      for (let message of this.props.currentRoom.messages) {
+        if (map.has(message.date)) {
+          continue;
+        } else {
+          map.set(message.date, message.createdAt);
+        }
+      }
+    }
+
+    // for last seen
+    let lastSeen;
+    if (this.props.roomSelected === true) {
+          let Messages = [...this.props.currentRoom.messages];
+          for(let message of Messages.reverse()){
+            if(message.sender === localStorage.getItem('contactNo')){
+              lastSeen = dayjs(message.createdAt).fromNow();
+              break;
+            }
+          }
+
+    }
     return (
       <React.Fragment>
         {this.props.roomSelected === true ? (
@@ -188,7 +197,9 @@ export class Chat extends Component {
                     ? this.props.currentRoom.users[1].roomName
                     : this.props.currentRoom.users[0].contactNo}
                 </h3>
-                <p style={{color:"#777" , fontWeight:"bold"}}>{this.state.typing === true ? "Typing...":"Last seen..."}</p>
+                <p style={{ color: "#777", fontWeight: "bold" }}>
+                  {this.state.typing === true ? "Typing..." : `Last seen ${lastSeen}`}
+                </p>
               </div>
 
               <div className="chat__header__right">
@@ -199,29 +210,29 @@ export class Chat extends Component {
             </div>
 
             <div className="chat__body">
-              {this.props.currentRoom.messages.map((m, i) => (
-                <p
-                  key={m._id}
-                  className={`message__body ${
-                    localStorage.getItem("contactNo") === m.sender
-                      ? "message__sender"
-                      : "message__receiver"
-                  }`}
-                >
-                  {m.body}
-                  <span className="message__timestamp">
-                    {dayjs(m.createdAt).format('LT')}
-                  </span>
-                  {/* <span className="message__name">
-                    {localStorage.getItem("contactNo") === m.sender
-                      ? localStorage.getItem("username")
-                      : this.props.currentRoom.createdBy === m.receiver
-                      ? this.props.currentRoom.users[0].roomName
-                      : this.props.currentRoom.users[1].roomName
-                      ? this.props.currentRoom.users[1].roomName
-                      : m.sender}
-                  </span> */}
-                </p>
+              {this.props.currentRoom.messages.map((m) => (
+                <React.Fragment key={m._id}>
+
+                  {map.has(m.date) && map.get(m.date) === m.createdAt ? (
+                    <div className="blockdate">
+                      <span>{ now === m.date ? "Today": m.date}</span>
+                    </div>
+                  ) : null}
+
+                  <p
+                    
+                    className={`message__body ${
+                      localStorage.getItem("contactNo") === m.sender
+                        ? "message__sender"
+                        : "message__receiver"
+                    }`}
+                  >
+                    {m.body}
+                    <span className="message__timestamp">
+                      {dayjs(m.createdAt).format("LT")}
+                    </span>
+                  </p>
+                </React.Fragment>
               ))}
 
               <div ref={this.chatRef}></div>
