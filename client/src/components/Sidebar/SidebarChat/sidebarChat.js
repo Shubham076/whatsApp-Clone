@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import "./sidebarChat.scss";
 import Popup from "../../popup/Popup";
 import { connect } from "react-redux";
-import { select_room } from "../../../store/actions/index";
+import { select_room, mark_read_in_selected,
+  mark_read_in_room } from "../../../store/actions/index";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import axios from "../../../server"
 
 class SidebarChat extends Component {
   state = {
@@ -12,6 +14,7 @@ class SidebarChat extends Component {
     show: false,
     flag: true,
     typing: false,
+    showCount:true
   };
 
   componentDidMount() {
@@ -47,7 +50,42 @@ class SidebarChat extends Component {
       createdBy: this.props.createdBy,
     };
 
+    let unreadMessages = [];
+    localStorage.removeItem('unreadMessage');
     this.props.selectRoom(room);
+    for(let message of this.props.messages){
+      if(message.read === false){
+        unreadMessages.push(message._id);
+      }
+    }
+
+    if(unreadMessages.length > 0){
+      this.setState({showCount:true})
+      let room  = this.props;
+      axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+      axios.put("/markRead",{messages:unreadMessages})
+      .then(res => {
+        this.props.io.emit("markRead", {
+          messages: unreadMessages,
+          receiver:
+            room.createdBy === localStorage.getItem("contactNo")
+              ? room.users[1].contactNo
+              : room.users[0].contactNo,
+              roomId:room._id
+        });
+
+        this.props.markReadInSelectedRoom(unreadMessages)
+        this.props.markReadInRoom(unreadMessages , this.props._id)
+
+        this.setState({showCount:false})
+      })
+      .catch(err=>{
+
+      })
+
+
+    }
+
   };
 
   render() {
@@ -65,12 +103,15 @@ class SidebarChat extends Component {
           count++;
         }
       }
+      localStorage.setItem('count',count);
 
       // last message;
+      if(this.props.messages.length >=1){ 
       lastMessage = this.props.messages[this.props.messages.length - 1].body;
       lastTime = dayjs(
         this.props.messages[this.props.messages.length - 1].createdAt
       ).format("LT");
+      }
     }
 
     return (
@@ -98,7 +139,7 @@ class SidebarChat extends Component {
                 {this.state.typing === true ? (
                   <div style={{ color: "#06d755", fontWeight: "bold" }}>
                     typing...
-                    {count > 0 ? (
+                    {count > 0  && this.state.showCount === true? (
                       <div>
                         <span className="unread_message_time">{lastTime}</span>
                         <span className="unread_message_count">{count}</span>
@@ -106,9 +147,9 @@ class SidebarChat extends Component {
                     ) : null}
                   </div>
                 ) : (
-                  <div>
+                  <div style={{fontFamily:"'Nunito' ,'Apple Color Emoji'"}}>
                     {lastMessage ? lastMessage : ""}
-                    {count > 0 ? (
+                    {count > 0 && this.state.showCount === true? (
                       <div>
                         <span className="unread_message_time">{lastTime}</span>
                         <span className="unread_message_count">{count}</span>
@@ -138,6 +179,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     selectRoom: (room) => dispatch(select_room(room)),
+    markReadInSelectedRoom: (m) => dispatch(mark_read_in_selected(m)),
+    markReadInRoom : (m , id) => dispatch(mark_read_in_room(m,id))
   };
 };
 

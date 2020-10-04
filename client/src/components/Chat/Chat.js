@@ -12,7 +12,7 @@ import {
   update_count,
   add_message_to_room,
   mark_read_in_selected,
-  mark_read_in_room
+  mark_read_in_room,
 } from "../../store/actions/index";
 import { createObjectId } from "mongodb-objectid";
 import axios from "../../server";
@@ -58,7 +58,7 @@ export class Chat extends Component {
         this.props.updateCount(data.message.roomId);
       });
 
-      // typing 
+      // typing
       this.props.io.on("typing", (data) => {
         if (
           this.props.currentRoom &&
@@ -69,19 +69,16 @@ export class Chat extends Component {
       });
 
       // markRead
-      this.props.io.on('markRead',data => {
+      this.props.io.on("markRead", (data) => {
         if (
           this.props.currentRoom &&
           this.props.currentRoom.id === data.roomId
         ) {
-          this.props.markReadInSelectedRoom(data.messages)
-          this.props.markReadInRoom(data.messages , data.roomId)
+          this.props.markReadInSelectedRoom(data.messages);
+          this.props.markReadInRoom(data.messages, data.roomId);
         }
-      })
+      });
     }, 200);
-
-
-    // mark all unread messages read case when both are not connected to current room
   }
 
   markMessageRead = (m) => {
@@ -96,7 +93,7 @@ export class Chat extends Component {
             room.createdBy === localStorage.getItem("contactNo")
               ? room.users[1].contactNo
               : room.users[0].contactNo,
-              roomId:room.id
+          roomId: room.id,
         });
       })
       .catch((err) => {});
@@ -210,6 +207,7 @@ export class Chat extends Component {
 
     // for showing timestamps between messages
     let map = new Map();
+    let lastSeen;
     if (this.props.roomSelected === true) {
       for (let message of this.props.currentRoom.messages) {
         if (map.has(message.date)) {
@@ -218,11 +216,7 @@ export class Chat extends Component {
           map.set(message.date, message.createdAt);
         }
       }
-    }
-
-    // for last seen
-    let lastSeen;
-    if (this.props.roomSelected === true) {
+      // for last seen
       let Messages = [...this.props.currentRoom.messages];
       for (let message of Messages.reverse()) {
         if (message.sender !== localStorage.getItem("contactNo")) {
@@ -230,7 +224,16 @@ export class Chat extends Component {
           break;
         }
       }
+
+      // unreadMesssage
+      for (let message of this.props.currentRoom.messages) {
+        if (message.read === false) {
+          localStorage.setItem("unreadMessage", message._id);
+          break;
+        }
+      }
     }
+
     return (
       <React.Fragment>
         {this.props.roomSelected === true ? (
@@ -267,6 +270,22 @@ export class Chat extends Component {
             <div className="chat__body">
               {this.props.currentRoom.messages.map((m) => (
                 <React.Fragment key={m._id}>
+
+                  {/* showing unread message status */}
+                  {localStorage.getItem('unreadMessage') && localStorage.getItem("unreadMessage") === m._id &&
+                  m.sender !== localStorage.getItem("contactNo") ? (
+                    <div className="blockdate">
+                      <span>
+                        {localStorage.getItem("count") > 1
+                          ? `${localStorage.getItem("count")} unread messages`
+                          : `${localStorage.getItem(
+                              "count"
+                            )} unread message`}{" "}
+                      </span>
+                    </div>
+                  ) : null}
+
+                {/* showing timestamps between messages */}
                   {map.has(m.date) && map.get(m.date) === m.createdAt ? (
                     <div className="blockdate">
                       <span>{now === m.date ? "Today" : m.date}</span>
@@ -370,7 +389,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCount: (id) => dispatch(update_count(id)),
     addMessageToRoom: (m) => dispatch(add_message_to_room(m)),
     markReadInSelectedRoom: (m) => dispatch(mark_read_in_selected(m)),
-    markReadInRoom : (m , id) => dispatch(mark_read_in_room(m,id))
+    markReadInRoom: (m, id) => dispatch(mark_read_in_room(m, id)),
   };
 };
 

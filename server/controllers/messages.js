@@ -22,8 +22,6 @@ exports.addMessage = async (req,res,next) => {
 
 exports.markMessagesRead = async (req,res,next) => {
     let messages = req.body.messages;
-    console.log(messages)
-
     try{
         for(let m of messages){
             let msg = await Message.findByIdAndUpdate(m , {read:true});
