@@ -29,13 +29,13 @@ const chatRoomReducer = (state=intitalState , action) => {
                 loading:false
             }
 
-        case actionTypes.ADD_ROOM:
+        case actionTypes.ADD_ROOM:{
             const newRooms = [...state.rooms];
             newRooms.splice(0,0,action.room);
             return{
                 ...state,
                 rooms:newRooms
-            }
+            }}
 
         case actionTypes.SELECT_ROOM:
             return{
@@ -44,7 +44,7 @@ const chatRoomReducer = (state=intitalState , action) => {
                 selected:true
             }
 
-        case actionTypes.ADD_MESSAGE:
+        case actionTypes.ADD_MESSAGE:{
             let room = {...state.selectedRoom};
             let messages = [...room.messages];
             messages.push(action.message);
@@ -53,9 +53,9 @@ const chatRoomReducer = (state=intitalState , action) => {
                 ...state,
                 selectedRoom:room
                 
-            }
+            }}
 
-        case actionTypes.ADD_MESSAGE_TO_ROOM:
+        case actionTypes.ADD_MESSAGE_TO_ROOM:{
             let chatRooms = [...state.rooms];
             let index = chatRooms.findIndex(c => c._id === action.message.roomId);
             let chatRoom = {...chatRooms[index]};
@@ -66,9 +66,9 @@ const chatRoomReducer = (state=intitalState , action) => {
             return{
                 ...state,
                 rooms:chatRooms
-            }
+            }}
             
-        case actionTypes.UPDATE_MESSAGE_COUNT:
+        case actionTypes.UPDATE_MESSAGE_COUNT:{
             let rooms = [...state.rooms];
             let i = rooms.findIndex(r => r._id === action.id)
             let chatroom = {...rooms[i]};
@@ -80,7 +80,45 @@ const chatRoomReducer = (state=intitalState , action) => {
             return{
                 ...state,
                 rooms:rooms
+            }}
+
+        case actionTypes.MARK_READ_IN_SELECTED_ROOM:{
+            let selectedRoom = {...state.selectedRoom}
+            let messages = [...selectedRoom.messages]
+            for(let m of action.messages){
+                let index = messages.findIndex(msg => msg._id === m)
+                let message = {...messages[index]};
+                message.read = true;
+                messages[index] = message
             }
+            selectedRoom.messages = messages
+            return{
+                ...state,
+                selectedRoom:selectedRoom
+
+            }
+        }
+
+        case actionTypes.MARK_READ_IN_ROOM:{
+            let rooms = [...state.rooms];
+            let index = rooms.findIndex((r) => r._id === action.roomId);
+            let room = {...rooms[index]};
+            let messages = [...room.messages]
+            for(let m of action.messages){
+                let i = messages.findIndex(msg => msg._id === m)
+                let message = {...messages[i]};
+                message.read = true;
+                messages[i] = message
+            }
+            room.messages = messages;
+            rooms[index] = room;
+            return{
+                ...state,
+                rooms:rooms
+            }
+            
+        }
+            
 
         case actionTypes.REMOVE_SELECTED_ROOM:
             return{

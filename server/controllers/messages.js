@@ -19,3 +19,21 @@ exports.addMessage = async (req,res,next) => {
         next(err)
     }
 }
+
+exports.markMessagesRead = async (req,res,next) => {
+    let messages = req.body.messages;
+    console.log(messages)
+
+    try{
+        for(let m of messages){
+            let msg = await Message.findByIdAndUpdate(m , {read:true});
+        }
+        res.status(201).json({
+            message:'Success'
+        })
+    }
+    catch(err){
+        next(err);
+    }
+ 
+}

@@ -51,10 +51,11 @@
 
     &__footer{
         display:flex;
-        padding:2.5rem;
         align-items: center;
         justify-content: space-between;
         border-top: 1px solid lightgrey;
+        flex-direction: column;
+        position: relative;
 
          &__input{
             flex:1;
@@ -62,6 +63,7 @@
             padding:1rem;
             display: flex;
             margin: 0 1rem 0 1rem;
+            z-index: 50;
 
             &>input{
                 flex:1;
@@ -91,8 +93,9 @@
         border-radius: 1rem;
         font-weight: 600;
         position: relative;
-        margin-bottom: 3.5rem;
+        margin-bottom: 1rem;
         color:#212121;
+        font-family: 'Nunito' ,'Apple Color Emoji';
     }
 
     &__sender{
@@ -106,7 +109,8 @@
 
     &__timestamp{
         color:#757575;
-        margin-left: 2rem;
+        margin: 0 2rem 0 1rem;
+        position: relative;
         font-size: xx-small;
     }
 
@@ -152,4 +156,32 @@
     border-radius: 7px;
     display: inline-block;
     margin-bottom: 1.6rem;
+}
+
+.emoji-mart-preview{
+    display: none !important;
+}
+
+.emoji-mart{
+    position: relative;
+    width: 100% !important;
+    background-color: #ededed !important;
+    z-index: 10;
+}
+.emoji-mart-category-label span{
+    background-color: #ededed !important;
+    color:#777;
+}
+
+.emoji-mart-category-label{
+    position: relative !important;
+}
+
+.emoji-mart-search input{
+    background-color: #e6e6e6;
+    border: none !important;
+}
+
+.emoji-mart-category-label{
+    padding: 0.6rem !important;
 }

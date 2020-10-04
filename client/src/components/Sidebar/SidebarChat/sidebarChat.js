@@ -4,7 +4,7 @@ import Popup from "../../popup/Popup";
 import { connect } from "react-redux";
 import { select_room } from "../../../store/actions/index";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 class SidebarChat extends Component {
   state = {
@@ -20,9 +20,9 @@ class SidebarChat extends Component {
 
     setTimeout(() => {
       this.props.io.on("typing", (data) => {
-        if(this.props._id === data.roomId){
-          this.setState({typing:data.typing})
-      }
+        if (this.props._id === data.roomId) {
+          this.setState({ typing: data.typing });
+        }
       });
     }, 200);
   }
@@ -51,22 +51,27 @@ class SidebarChat extends Component {
   };
 
   render() {
-    dayjs.extend(relativeTime);
+    dayjs.extend(localizedFormat);
 
-        // for last seen
-        let lastSeen;
-        if(this.props.messages){
+    // for last seen
+    let count = 0;
+    let lastMessage;
+    let lastTime;
+    if (this.props.messages) {
 
-          let Messages = [...this.props.messages];
-          for(let message of Messages.reverse()){
-            if(message.sender === localStorage.getItem('contactNo')){
-              lastSeen = dayjs(message.createdAt).fromNow();
-              break;
-            }
-          }
+      // unread message count
+      for (let message of this.props.messages) {
+        if (message.read === false && localStorage.getItem('contactNo') !== message.sender) {
+          count++;
         }
-           
-    
+      }
+
+      // last message;
+      lastMessage = this.props.messages[this.props.messages.length - 1].body;
+      lastTime = dayjs(
+        this.props.messages[this.props.messages.length - 1].createdAt
+      ).format("LT");
+    }
 
     return (
       <>
@@ -91,13 +96,25 @@ class SidebarChat extends Component {
               <div className="sidebar__chat__info">
                 <h2>{this.props.name}</h2>
                 {this.state.typing === true ? (
-                  <p style={{ color: "#06d755", fontWeight: "bold"}}>
-                    typing...<div><span className="unread_message_count">2</span></div>
-                  </p>
+                  <div style={{ color: "#06d755", fontWeight: "bold" }}>
+                    typing...
+                    {count > 0 ? (
+                      <div>
+                        <span className="unread_message_time">{lastTime}</span>
+                        <span className="unread_message_count">{count}</span>
+                      </div>
+                    ) : null}
+                  </div>
                 ) : (
-                  <p>
-                    Last seen {lastSeen}<span className="unread_message_count">2</span>
-                  </p>
+                  <div>
+                    {lastMessage ? lastMessage : ""}
+                    {count > 0 ? (
+                      <div>
+                        <span className="unread_message_time">{lastTime}</span>
+                        <span className="unread_message_count">{count}</span>
+                      </div>
+                    ) : null}
+                  </div>
                 )}
               </div>
             </div>

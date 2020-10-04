@@ -29,7 +29,7 @@ html{
   z-index: 10;
   cursor: pointer;
 
-  &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send{
+  &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send ,&__cross , &__tick{
     height: 2rem;
     width:2rem;
     margin-right: 1rem;
@@ -54,6 +54,18 @@ html{
 &__send{
   height: 3rem;
   width: 3rem;
+}
+
+&__cross{
+  height: 3rem;
+  width: 3rem;
+}
+
+&__tick{
+  margin-left: 0.3rem;
+  position: absolute;
+  top:50%;
+  transform: translateY(-50%);
 }
 
   &__search{

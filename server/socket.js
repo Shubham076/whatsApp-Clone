@@ -18,6 +18,10 @@ module.exports = {
                 socket.broadcast.to(data.typing.receiver).emit('typing',{typing:false,roomId:data.typing.roomId})
             })
 
+            socket.on('markRead' ,data => {
+                socket.broadcast.to(data.receiver).emit('markRead',{messages:data.messages , roomId:data.roomId})
+            })
+
 
 
         })

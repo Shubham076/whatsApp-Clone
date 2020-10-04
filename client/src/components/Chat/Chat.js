@@ -11,12 +11,18 @@ import {
   add_message,
   update_count,
   add_message_to_room,
+  mark_read_in_selected,
+  mark_read_in_room
 } from "../../store/actions/index";
 import { createObjectId } from "mongodb-objectid";
 import axios from "../../server";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import "emoji-mart/css/emoji-mart.css";
+import { Picker } from "emoji-mart";
+import Cross from "../../svgs/Cross";
+import Tick from "../../svgs/Tick";
 
 export class Chat extends Component {
   constructor(props) {
@@ -29,7 +35,7 @@ export class Chat extends Component {
     message: "",
     messages: [],
     typing: false,
-    uniqueDates: [],
+    showPicker: false,
   };
 
   componentDidMount() {
@@ -43,13 +49,16 @@ export class Chat extends Component {
           this.props.currentRoom &&
           this.props.currentRoom.id === data.message.roomId
         ) {
+          data.message.read = true;
           this.props.addMessage(data.message);
+          this.markMessageRead(data.message);
         }
 
         this.props.addMessageToRoom(data.message);
         this.props.updateCount(data.message.roomId);
       });
 
+      // typing 
       this.props.io.on("typing", (data) => {
         if (
           this.props.currentRoom &&
@@ -58,8 +67,40 @@ export class Chat extends Component {
           this.setState({ typing: data.typing });
         }
       });
+
+      // markRead
+      this.props.io.on('markRead',data => {
+        if (
+          this.props.currentRoom &&
+          this.props.currentRoom.id === data.roomId
+        ) {
+          this.props.markReadInSelectedRoom(data.messages)
+          this.props.markReadInRoom(data.messages , data.roomId)
+        }
+      })
     }, 200);
+
+
+    // mark all unread messages read case when both are not connected to current room
   }
+
+  markMessageRead = (m) => {
+    let messages = [m._id];
+    let room = this.props.currentRoom;
+    axios
+      .put("/markRead", { messages: messages })
+      .then((res) => {
+        this.props.io.emit("markRead", {
+          messages: messages,
+          receiver:
+            room.createdBy === localStorage.getItem("contactNo")
+              ? room.users[1].contactNo
+              : room.users[0].contactNo,
+              roomId:room.id
+        });
+      })
+      .catch((err) => {});
+  };
 
   componentDidUpdate() {
     this.scrollToBottom();
@@ -75,38 +116,47 @@ export class Chat extends Component {
     this.setState({ message: e.target.value });
   };
 
+  showPickerHandler = () => {
+    this.setState({ showPicker: true });
+  };
+
+  hidePickerHandler = () => {
+    this.setState({ showPicker: false });
+  };
+
   sendMessage = async (e) => {
     e.preventDefault();
-    let room = this.props.currentRoom;
+    if (this.state.message !== "") {
+      let room = this.props.currentRoom;
 
-    let newMessage = {
-      _id: await createObjectId(),
-      body: this.state.message,
-      sender: localStorage.getItem("contactNo"),
-      receiver:
-        room.createdBy === localStorage.getItem("contactNo")
-          ? room.users[1].contactNo
-          : room.users[0].contactNo,
-      roomId: this.props.currentRoom.id,
-      createdAt: new Date().toISOString(),
-      read: false,
-    };
+      let newMessage = {
+        _id: await createObjectId(),
+        body: this.state.message,
+        sender: localStorage.getItem("contactNo"),
+        receiver:
+          room.createdBy === localStorage.getItem("contactNo")
+            ? room.users[1].contactNo
+            : room.users[0].contactNo,
+        roomId: this.props.currentRoom.id,
+        createdAt: new Date().toISOString(),
+        read: false,
+      };
 
-    newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
+      newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
+      this.props.addMessage(newMessage);
+      this.props.addMessageToRoom(newMessage);
+      this.setState({ message: "" });
 
-    this.props.addMessage(newMessage);
-    this.props.addMessageToRoom(newMessage);
-    this.setState({ message: "" });
-
-    axios.defaults.headers.common["Authorization"] = localStorage.getItem(
-      "token"
-    );
-    axios
-      .post("/addMessage", { message: newMessage })
-      .then(() => {
-        this.props.io.emit("sendMessage", { message: newMessage });
-      })
-      .catch((err) => {});
+      axios.defaults.headers.common["Authorization"] = localStorage.getItem(
+        "token"
+      );
+      axios
+        .post("/addMessage", { message: newMessage })
+        .then(() => {
+          this.props.io.emit("sendMessage", { message: newMessage });
+        })
+        .catch((err) => {});
+    }
   };
 
   sendTypingIndication = (e) => {
@@ -147,12 +197,16 @@ export class Chat extends Component {
     }
   };
 
+  addEmojiToMessage = (emoji) => {
+    let message = this.state.message;
+    let updatedMessage = `${message}${emoji.native}`;
+    this.setState({ message: updatedMessage });
+  };
+
   render() {
     dayjs.extend(relativeTime);
     dayjs.extend(localizedFormat);
-    let now = dayjs().format('D MMMM YYYY');
-    console.log(now)
-
+    let now = dayjs().format("D MMMM YYYY");
 
     // for showing timestamps between messages
     let map = new Map();
@@ -169,14 +223,13 @@ export class Chat extends Component {
     // for last seen
     let lastSeen;
     if (this.props.roomSelected === true) {
-          let Messages = [...this.props.currentRoom.messages];
-          for(let message of Messages.reverse()){
-            if(message.sender === localStorage.getItem('contactNo')){
-              lastSeen = dayjs(message.createdAt).fromNow();
-              break;
-            }
-          }
-
+      let Messages = [...this.props.currentRoom.messages];
+      for (let message of Messages.reverse()) {
+        if (message.sender !== localStorage.getItem("contactNo")) {
+          lastSeen = dayjs(message.createdAt).fromNow();
+          break;
+        }
+      }
     }
     return (
       <React.Fragment>
@@ -198,7 +251,9 @@ export class Chat extends Component {
                     : this.props.currentRoom.users[0].contactNo}
                 </h3>
                 <p style={{ color: "#777", fontWeight: "bold" }}>
-                  {this.state.typing === true ? "Typing..." : `Last seen ${lastSeen}`}
+                  {this.state.typing === true
+                    ? "Typing..."
+                    : `Last seen ${lastSeen ? lastSeen : "..."}`}
                 </p>
               </div>
 
@@ -212,24 +267,25 @@ export class Chat extends Component {
             <div className="chat__body">
               {this.props.currentRoom.messages.map((m) => (
                 <React.Fragment key={m._id}>
-
                   {map.has(m.date) && map.get(m.date) === m.createdAt ? (
                     <div className="blockdate">
-                      <span>{ now === m.date ? "Today": m.date}</span>
+                      <span>{now === m.date ? "Today" : m.date}</span>
                     </div>
                   ) : null}
 
                   <p
-                    
                     className={`message__body ${
                       localStorage.getItem("contactNo") === m.sender
                         ? "message__sender"
                         : "message__receiver"
                     }`}
                   >
-                    {m.body}
+                    <span>{m.body}</span>
                     <span className="message__timestamp">
                       {dayjs(m.createdAt).format("LT")}
+                      {localStorage.getItem("contactNo") === m.sender ? (
+                        <Tick color={m.read === true ? "30e0b6" : "757575"} />
+                      ) : null}
                     </span>
                   </p>
                 </React.Fragment>
@@ -239,19 +295,43 @@ export class Chat extends Component {
             </div>
 
             <div className="chat__footer">
-              <Emoji />
-              <form onSubmit={this.sendMessage} className="chat__footer__input">
-                <input
-                  autoFocus
-                  onChange={this.handleChange}
-                  onKeyDown={this.sendTypingIndication}
-                  value={this.state.message}
-                  placeholder="Send a message"
-                  type="text"
-                />
-                <button className="chat__footer__btn"></button>
-              </form>
-              <Mic />
+              <Picker
+                title="Pick your emoji"
+                set="apple"
+                emojiSize={35}
+                onSelect={this.addEmojiToMessage}
+                style={{ display: this.state.showPicker ? "block" : "none" }}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  alignItems: "center",
+                  padding: "2.5rem",
+                }}
+              >
+                {this.state.showPicker ? (
+                  <Cross click={this.hidePickerHandler} />
+                ) : (
+                  <Emoji click={this.showPickerHandler} />
+                )}
+                <form
+                  onSubmit={this.sendMessage}
+                  className="chat__footer__input"
+                >
+                  <input
+                    autoFocus
+                    onChange={this.handleChange}
+                    onKeyDown={this.sendTypingIndication}
+                    value={this.state.message}
+                    placeholder="Send a message"
+                    type="text"
+                  />
+                  <button className="chat__footer__btn"></button>
+                </form>
+                <Mic />
+              </div>
             </div>
           </div>
         ) : (
@@ -289,6 +369,8 @@ const mapDispatchToProps = (dispatch) => {
     addMessage: (m) => dispatch(add_message(m)), //adding message to selected room only
     updateCount: (id) => dispatch(update_count(id)),
     addMessageToRoom: (m) => dispatch(add_message_to_room(m)),
+    markReadInSelectedRoom: (m) => dispatch(mark_read_in_selected(m)),
+    markReadInRoom : (m , id) => dispatch(mark_read_in_room(m,id))
   };
 };
 

@@ -71,3 +71,18 @@ export const update_count = (roomId) => {
     id:roomId
   }
 }
+
+export const mark_read_in_selected = (messages) => {
+  return{
+    type:actionTypes.MARK_READ_IN_SELECTED_ROOM,
+    messages:messages
+  }
+}
+
+export const mark_read_in_room = (messages , roomId) => {
+  return{
+    type:actionTypes.MARK_READ_IN_ROOM,
+    messages:messages,
+    roomId:roomId
+  }
+}
