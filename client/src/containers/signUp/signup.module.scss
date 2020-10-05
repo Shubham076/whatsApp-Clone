@@ -2,7 +2,14 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-top: 10rem;
+  background-color: #fff;
+  position: absolute;
+  height:88vh;
+  left:50%;
+  top:15%;
+  transform: translateX(-50%);
+  width: 80rem;
+  box-shadow: 1rem 3rem 4rem rgba(0,0,0,0.3) ;
 
   &__header {
     font-size: 3.2rem;
@@ -23,7 +30,7 @@
 }
 
 .btn__submit {
-  background-color: #71c9ce;
+  background-color: #44e6c3;
   color: #fff;
   border-radius: 4px;
   border: none;

@@ -43,83 +43,89 @@ const SignUp = (props) => {
   ) : null;
 
   return (
-    <div className={classes.form}>
-      {error}
 
-      <h2 className={classes.form__header}>Sign Up</h2>
+    <div className="_form">
+      <div className="form__inner__top">
+          <div className={classes.form}>
+          {error}
 
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          props.auth(
-            values.email,
-            values.password,
-            values.username,
-            values.contactNo,
-            props
-          );
-        }}
-        validationSchema={validationSchema}
-        validateOnMount
-      >
-        {(formik) => {
-          return (
-            <Form
-            autoComplete = "off"
-            noValidate
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "45rem",
-              }}
-            >
+          <h2 style={{marginTop:"10rem"}} className={classes.form__header}>Sign Up</h2>
 
-              <FormikControl
-                control="input"
-                type="text"
-                label="Username"
-                name="username"
-                touched={formik.touched.username}
-              />
-              <FormikControl
-                control="input"
-                type="email"
-                label="Email"
-                name="email"
-                touched={formik.touched.email}
-              />
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              props.auth(
+                values.email,
+                values.password,
+                values.username,
+                values.contactNo,
+                props
+              );
+            }}
+            validationSchema={validationSchema}
+            validateOnMount
+          >
+            {(formik) => {
+              return (
+                <Form
+                autoComplete = "off"
+                noValidate
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "45rem",
+                  }}
+                >
 
-            <FormikControl
-                control="input"
-                type="text"
-                label="ContactNo"
-                name="contactNo"
-                touched={formik.touched.contactNo}
-              />
+                  <FormikControl
+                    control="input"
+                    type="text"
+                    label="Username"
+                    name="username"
+                    touched={formik.touched.username}
+                  />
+                  <FormikControl
+                    control="input"
+                    type="email"
+                    label="Email"
+                    name="email"
+                    touched={formik.touched.email}
+                  />
 
-              <FormikControl
-                control="input"
-                type="password"
-                label="Password"
-                name="password"
-                touched={formik.touched.password}
-              />
+                <FormikControl
+                    control="input"
+                    type="text"
+                    label="ContactNo"
+                    name="contactNo"
+                    touched={formik.touched.contactNo}
+                  />
 
-              <button
-                type="submit"
-                disabled={!formik.isValid}
-                className={classes.btn__submit}
-              >
-                {btnContent}
-              </button>
-              <Link className={classes.link} to="/">
-                Already have an account ? <span style={{color:"#000"}}> Click here</span> 
-              </Link>
-            </Form>
-          );
-        }}
-      </Formik>
+                  <FormikControl
+                    control="input"
+                    type="password"
+                    label="Password"
+                    name="password"
+                    touched={formik.touched.password}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!formik.isValid}
+                    className={classes.btn__submit}
+                  >
+                    {btnContent}
+                  </button>
+                  <Link className={classes.link} to="/">
+                    Already have an account ? <span style={{color:"#000"}}> Click here</span> 
+                  </Link>
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
+      </div>
     </div>
+    
   );
 };
 

@@ -3,14 +3,14 @@ $body-color:#ededed;
 
 .home{
     background-color: $bg-color;
-    height:90vh;
+    height:100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 
     &__body{
         display: flex;
-        height: 80vh;
+        height: 90vh;
         width: 85vw;
         overflow-x: auto;
         background-color: $body-color;

@@ -52,8 +52,9 @@ html{
 }
 
 &__send{
-  height: 3rem;
-  width: 3rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  fill:#212121;
 }
 
 &__cross{
@@ -81,4 +82,15 @@ html{
   top:50%;
   left:50%;
   transform: translate(-50% , -50%);
+}
+
+._form{
+  background-color: #dadbd8;
+  height: 100vh;
+  position: relative;
+}
+
+.form__inner__top{
+  background-color: #00bfa5;
+  height:30vh;
 }

@@ -59,6 +59,7 @@ class SidebarChat extends Component {
       }
     }
 
+    // case when both room is not selected or in a diiferent room
     if(unreadMessages.length > 0){
       this.setState({showCount:true})
       let room  = this.props;

@@ -26,10 +26,10 @@ function App(props) {
 
 
   return (
-      <div className="App">
-        <Layout>
+      <div>
+        {/* <Layout> */}
           {routes}
-        </Layout>
+        {/* </Layout> */}
       </div>
     
   );

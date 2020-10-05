@@ -4,6 +4,7 @@ import Attach from "../../svgs/Attach";
 import More from "../../svgs/More";
 import Emoji from "../../svgs/Emoji";
 import Mic from "../../svgs/Mic";
+import Send from "../../svgs/Send"
 import "./chat.scss";
 import { connect } from "react-redux";
 import Phone from "../../images/phone.jpg";
@@ -160,6 +161,7 @@ export class Chat extends Component {
     let room = this.props.currentRoom;
 
     if (e.key === "Enter") {
+      this.setState({showPicker:false})
       this.props.io.emit("stopTyping", {
         typing: {
           receiver:
@@ -349,6 +351,7 @@ export class Chat extends Component {
                   />
                   <button className="chat__footer__btn"></button>
                 </form>
+                <Send click={this.sendMessage}/>
                 <Mic />
               </div>
             </div>

@@ -4,7 +4,7 @@ import Navbar from "./navbar/navbar"
 const Layout = (props) => {
     return (
         <Fragment>
-            <Navbar />
+            {/* <Navbar />  */}
             {props.children}
 
         </Fragment>
