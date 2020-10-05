@@ -10,6 +10,7 @@ import {createObjectId} from "mongodb-objectid"
 import {connect} from "react-redux"
 import {get_rooms , add_room} from "../../store/actions/index";
 import RoomSpinner from '../RoomSpinner/RoomSpinner'
+import Options from "./options/Options"
 import axios from "../../server";
 
 class Sidebar extends Component {
@@ -28,11 +29,20 @@ class Sidebar extends Component {
     
     state={
         name:"",
-        contactNo:""
+        contactNo:"",
+        showOptions:false
     }
 
     handleChange = (name , value)=>{
         this.setState({[name]: value});
+    }
+
+    viewOptions = ()=>{
+        this.setState({showOptions:true});
+    }
+
+    hideOptions = () => {
+        this.setState({showOptions:false})
     }
 
 
@@ -80,7 +90,8 @@ class Sidebar extends Component {
                     <div className="sidebar__header-right">
                         <Donut/>
                         <Chat/>
-                        <More/>
+                        <More click ={this.viewOptions}/>
+                        <Options show={this.state.showOptions} close={this.hideOptions}/>
                     </div>
                     
                 </div>
