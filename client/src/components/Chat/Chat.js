@@ -24,11 +24,18 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import Cross from "../../svgs/Cross";
 import Tick from "../../svgs/Tick";
+import UIfx from "uifx"
+import sentSound from "../../sounds/send.mp3"
+import receiveSound from "../../sounds/recieves.mp3"
+import notification from "../../sounds/notification.mp3"
 
 export class Chat extends Component {
   constructor(props) {
     super(props);
     this.chatRef = React.createRef();
+    this.sendSound = new UIfx(sentSound,{volume:1});
+    this.receivesound = new UIfx(receiveSound,{volume:1})
+    this.notificationSound = new UIfx(notification,{volume:1})
   }
 
   state = {
@@ -52,11 +59,18 @@ export class Chat extends Component {
         ) {
           data.message.read = true;
           this.props.addMessage(data.message);
+          this.receivesound.play();
           this.markMessageRead(data.message);
+          this.props.addMessageToRoom(data.message);
         }
 
-        this.props.addMessageToRoom(data.message);
-        this.props.updateCount(data.message.roomId);
+        else{
+          this.props.addMessageToRoom(data.message);
+          this.notificationSound.play();
+          this.props.updateCount(data.message.roomId);
+        }
+
+    
       });
 
       // typing
@@ -143,6 +157,7 @@ export class Chat extends Component {
       newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
       this.props.addMessage(newMessage);
       this.props.addMessageToRoom(newMessage);
+      this.sendSound.play();
       this.setState({ message: "" });
 
       axios.defaults.headers.common["Authorization"] = localStorage.getItem(

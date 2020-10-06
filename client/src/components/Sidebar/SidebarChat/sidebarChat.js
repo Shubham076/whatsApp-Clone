@@ -54,7 +54,7 @@ class SidebarChat extends Component {
     localStorage.removeItem('unreadMessage');
     this.props.selectRoom(room);
     for(let message of this.props.messages){
-      if(message.read === false){
+      if(message.read === false && message.sender != localStorage.getItem('contactNo')){
         unreadMessages.push(message._id);
       }
     }
