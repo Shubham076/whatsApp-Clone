@@ -58,9 +58,9 @@ export class Chat extends Component {
           this.props.currentRoom &&
           this.props.currentRoom.id === data.message.roomId
         ) {
+          this.receivesound.play();
           data.message.read = true;
           this.props.addMessage(data.message);
-          this.receivesound.play();
           this.markMessageRead(data.message);
           this.props.addMessageToRoom(data.message);
         }
@@ -159,8 +159,8 @@ export class Chat extends Component {
 
       newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
       this.props.addMessage(newMessage);
-      this.props.addMessageToRoom(newMessage);
       this.sendSound.play();
+      this.props.addMessageToRoom(newMessage);
       this.setState({ message: "" });
 
       axios.defaults.headers.common["Authorization"] = localStorage.getItem(
@@ -265,7 +265,7 @@ export class Chat extends Component {
               />
 
               <div className="chat__header__info">
-                <h3>
+                <h3 style={{fontSize:"1.4rem"}}>
                   {localStorage.getItem("contactNo") ===
                   this.props.currentRoom.createdBy
                     ? this.props.currentRoom.users[0].roomName
@@ -273,7 +273,7 @@ export class Chat extends Component {
                     ? this.props.currentRoom.users[1].roomName
                     : this.props.currentRoom.users[0].contactNo}
                 </h3>
-                <p style={{ color: "#777", fontWeight: "bold" , fontSize:"1.5rem" }}>
+                <p style={{ color: "#777", fontWeight: "bold" , fontSize:"1.3rem" }}>
                   {this.state.typing === true
                     ? "Typing..."
                     : `Last seen ${lastSeen ? lastSeen : "..."}`}
@@ -308,7 +308,7 @@ export class Chat extends Component {
                 {/* showing timestamps between messages */}
                   {map.has(m.date) && map.get(m.date) === m.createdAt ? (
                     <div className="blockdate">
-                      <span style={{fontSize:"1.5rem"}}>{now === m.date ? "Today" : m.date}</span>
+                      <span>{now === m.date ? "Today" : m.date}</span>
                     </div>
                   ) : null}
 
@@ -338,6 +338,7 @@ export class Chat extends Component {
                 title="Pick your emoji"
                 set="apple"
                 emojiSize={35}
+                sheetSize={32}
                 onSelect={this.addEmojiToMessage}
                 style={{ display: this.state.showPicker ? "block" : "none" }}
               />

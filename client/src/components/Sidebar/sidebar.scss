@@ -4,7 +4,7 @@
     flex-direction: column;
     
     &__header{
-        padding:2rem;
+        padding:2rem 1.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -37,7 +37,9 @@
 
             & > input{
                 border:none;
-                margin-left: 10px;
+                margin-left: 0.7rem;
+                font-weight: 600;
+                width: 100%;
             }
 
         }

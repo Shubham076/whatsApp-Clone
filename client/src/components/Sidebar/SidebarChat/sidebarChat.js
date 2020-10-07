@@ -134,7 +134,7 @@ class SidebarChat extends Component {
               />
 
               <div className="sidebar__chat__info">
-                <h3>{this.props.name}</h3>
+                <h2 style={{fontSize:"1.4rem"}}>{this.props.name}</h2>
                 {this.state.typing === true ? (
                   <div style={{ color: "#06d755", fontWeight: "bold" }}>
                     typing...
@@ -147,7 +147,7 @@ class SidebarChat extends Component {
                   </div>
                 ) : (
                   <div style={{fontFamily:"'Nunito' ,'Apple Color Emoji'"}}>
-                    <p style={{fontSize:"1.25rem"}}>{lastMessage ? lastMessage : ""}</p>
+                    <p style={{fontSize:"1.3rem"}}>{lastMessage ? lastMessage : ""}</p>
                     {count > 0? (
                       <div>
                         <span className="unread_message_time">{lastTime}</span>

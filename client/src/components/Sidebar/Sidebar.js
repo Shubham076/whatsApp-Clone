@@ -19,7 +19,6 @@ class Sidebar extends Component {
         this.props.getRooms(localStorage.getItem('contactNo'));
         setTimeout(()=>{
             this.props.io.on('newRoom' , data => {
-
                 let room = data.room;
                 room.noOfMessages = 0
                 this.props.addRoom(room);

@@ -1,6 +1,6 @@
 .sidebar__chat{
     display: flex;
-    padding:2rem;
+    padding:1rem;
     cursor: pointer;
     border-bottom: 1px solid #eee;
     align-items: center;
@@ -31,8 +31,8 @@
     }
 
     &__img{
-        height: 6rem;
-        width: 6rem;
+        height: 4rem;
+        width: 4rem;
         object-fit: cover;
         border-radius: 50%;
         margin-right: 2rem;
@@ -40,9 +40,9 @@
 }
 
 .addNew{
-    font-size: 2rem;
+    font-size: 1.5rem;
     color:#212121;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .unread_message_count{
@@ -56,7 +56,8 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    text-align: center;
+    display: grid;
+    place-items: center;
 }
 
 .unread_message_time{

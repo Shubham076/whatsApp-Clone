@@ -3,6 +3,7 @@ const io = require("../socket");
 
 module.exports = {
     init:()=>{
+        console.log("working")
         const db = mongoose.connection;
         db.once("open" , () => {
             const roomCollection = db.collection("rooms");

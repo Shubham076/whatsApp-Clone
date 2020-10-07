@@ -14,13 +14,60 @@ body{
   color:$color-grey-dark;
 }
 
+// phone = 600px  = 600/16 = 37.5em
+// tablet = 900px  = 900/16 = 56.25em
+// desktop = 1200px = 1200/16 = 75em
+// large-desktop = 1600px = 1500/16 = 93.75em
+// 
+
+@mixin respond($breakpoint) {
+
+  @if $breakpoint == phone{             //for screen size < 601px
+    @media screen and (max-width:37.5em){ @content};  
+  }
+
+  @if $breakpoint == tab{               //for screen size < 901px
+    @media screen and (max-width:56.25em){ @content};
+  }
+  
+  @if $breakpoint == desktop{            //for screen size < 1201px
+    @media screen and (max-width:75em){ @content};
+  }
+
+  @if $breakpoint == large_desktop{      //for screen size > 1600px
+    @media screen and (min-width:100em){ @content};
+  }
+  
+}
+
+
+/* 1rem = 10 px */
 html{
-  font-size: 62.5%;  //1rem = 10px;
+  font-size: 62.5%;  
+
+  @include respond(large-desktop){
+    font-size: 75%;  //1rem = 12/16 = 0.75
+  }
+
+  @include respond(desktop){
+    font-size: 59.37%;  //1rem = 9.5/16 = 0.5937
+  }
+
+  @include respond(tab){
+    font-size: 56.25%;     //1rem = 9px
+  }
+
+   // 1 rem =  8px = 8/16 = 0.50
+  @include respond(phone){
+    font-size: 50%;
+  }
+
+
 }
 
 .icon{
-  height:3.5rem;
-  width:3.5rem;
+  height:2.5rem;
+  width:2.5rem;
   display: inline-block;
   stroke-width: 0;
   stroke: currentColor;
@@ -30,8 +77,8 @@ html{
   cursor: pointer;
 
   &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send ,&__cross , &__tick , &__add , &__block{
-    height: 2rem;
-    width:2rem;
+    height: 1.8rem;
+    width:1.8rem;
     margin-right: 1rem;
     fill:#212121;
     transform: scale(1);
@@ -52,8 +99,8 @@ html{
 }
 
 &__send{
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2rem;
+  width: 2rem;
   fill:#212121;
 }
 
