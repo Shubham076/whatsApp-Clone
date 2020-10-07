@@ -14,7 +14,6 @@ import {
   add_message_to_room,
   mark_read_in_selected,
   mark_read_in_room,
-  update_room
 } from "../../store/actions/index";
 import { createObjectId } from "mongodb-objectid";
 import axios from "../../server";
@@ -274,7 +273,7 @@ export class Chat extends Component {
                     ? this.props.currentRoom.users[1].roomName
                     : this.props.currentRoom.users[0].contactNo}
                 </h3>
-                <p style={{ color: "#777", fontWeight: "bold" }}>
+                <p style={{ color: "#777", fontWeight: "bold" , fontSize:"1.5rem" }}>
                   {this.state.typing === true
                     ? "Typing..."
                     : `Last seen ${lastSeen ? lastSeen : "..."}`}
@@ -309,7 +308,7 @@ export class Chat extends Component {
                 {/* showing timestamps between messages */}
                   {map.has(m.date) && map.get(m.date) === m.createdAt ? (
                     <div className="blockdate">
-                      <span>{now === m.date ? "Today" : m.date}</span>
+                      <span style={{fontSize:"1.5rem"}}>{now === m.date ? "Today" : m.date}</span>
                     </div>
                   ) : null}
 
