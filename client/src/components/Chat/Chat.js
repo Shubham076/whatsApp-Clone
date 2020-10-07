@@ -141,6 +141,7 @@ export class Chat extends Component {
 
   sendMessage = async (e) => {
     e.preventDefault();
+    this.setState({showPicker:false})
     if (this.state.message !== "") {
       let room = this.props.currentRoom;
 
