@@ -8,7 +8,7 @@ import Search from "../../svgs/search"
 import SidebarChat from './SidebarChat/sidebarChat'
 import {createObjectId} from "mongodb-objectid"
 import {connect} from "react-redux"
-import {get_rooms , add_room} from "../../store/actions/index";
+import {get_rooms , add_room , update_room} from "../../store/actions/index";
 import RoomSpinner from '../RoomSpinner/RoomSpinner'
 import Options from "./options/Options"
 import axios from "../../server";
@@ -19,6 +19,7 @@ class Sidebar extends Component {
         this.props.getRooms(localStorage.getItem('contactNo'));
         setTimeout(()=>{
             this.props.io.on('newRoom' , data => {
+
                 let room = data.room;
                 room.noOfMessages = 0
                 this.props.addRoom(room);
@@ -30,7 +31,8 @@ class Sidebar extends Component {
     state={
         name:"",
         contactNo:"",
-        showOptions:false
+        showOptions:false,
+        error:null
     }
 
     handleChange = (name , value)=>{
@@ -48,14 +50,14 @@ class Sidebar extends Component {
 
     handleSubmit = async ()=>{
       let _id = await createObjectId();
-    
-        let newRoom = {
-            createdBy:localStorage.getItem('contactNo'),
-            _id:_id,
-            users:[
-                {
-                    contactNo:localStorage.getItem('contactNo'),
-                    roomName:this.state.name
+      
+      let newRoom = {
+          createdBy:localStorage.getItem('contactNo'),
+          _id:_id,
+          users:[
+              {
+                  contactNo:localStorage.getItem('contactNo'),
+                  roomName:this.state.name
                 },
                 {
                     contactNo:this.state.contactNo
@@ -65,16 +67,46 @@ class Sidebar extends Component {
             noOfMessages:0
         }
 
-        this.props.addRoom(newRoom);
-        this.setState({ name:"" , contactNo:""})
+        // case one user created the room previosuly
+        let r = {...this.props.Rooms.find(r => r.users[1].contactNo === this.state.contactNo)};
+        if(Object.keys(r).length > 0){
+            alert("You already have a contact with this contact no")
+            this.setState({ name:"" , contactNo:""})
+            return;
+        }
 
-        axios.post("/addRoom",{room:newRoom})
-        .then((res)=>{
+        // case when other user created the room not you
+        let room = {...this.props.Rooms.find(r => r.users[0].contactNo === this.state.contactNo)};
+        if(Object.keys(room).length > 0){
+            if(room.users[1].roomName){
+                alert("You already have a contact with this contact no")
+                this.setState({ name:"" , contactNo:""})
+                return;
+            }
+            room.users[1].roomName = this.state.name;
+            this.props.updateRoom(room);
+            this.setState({ name:"" , contactNo:""})
+            axios.put("/updateRoom",{room:room})
+            .then(()=>{
 
-        })
-        .catch(err => {
+            })
+            .catch(err=>{
 
-        })
+            })
+            
+        }
+        else{
+            this.props.addRoom(newRoom);
+            this.setState({ name:"" , contactNo:""})
+    
+            axios.post("/addRoom",{room:newRoom})
+            .then((res)=>{
+    
+            })
+            .catch(err => {
+    
+            })
+        }
     }
 
     render() {
@@ -138,7 +170,8 @@ const mapStateToProps = state =>{
 const mapDispatchToProps = dispatch => {
     return{
         getRooms : (no) =>dispatch(get_rooms(no)),
-        addRoom : (room) => dispatch(add_room(room)) 
+        addRoom : (room) => dispatch(add_room(room)),
+        updateRoom : (room) => dispatch(update_room(room)) 
     }
 }
 

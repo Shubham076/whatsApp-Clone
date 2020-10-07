@@ -10,9 +10,7 @@ module.exports = {
             roomChangeStream.on("change" , (change) => {
                 if(change.operationType === "insert"){
                     const newroom = change.fullDocument;
-                    console.log(newroom)
-                    
-                        io.getIo().in(newroom.users[1].contactNo).emit('newRoom' ,{room:newroom});
+                    io.getIo().in(newroom.users[1].contactNo).emit('newRoom' ,{room:newroom});
                 }
             })
         })

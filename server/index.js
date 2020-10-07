@@ -14,7 +14,7 @@ require("dotenv").config();
 
 
 app.use(cors());
-app.use(morgan("tiny"));
+// app.use(morgan("tiny"));
 app.use(compression());
 app.use(helmet());
 app.use(bodyParser.json());

@@ -29,7 +29,7 @@ html{
   z-index: 10;
   cursor: pointer;
 
-  &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send ,&__cross , &__tick{
+  &__chat,&__donut,&__more , &__search , &__attach , &__emoji , &__mic , &__send ,&__cross , &__tick , &__add , &__block{
     height: 2rem;
     width:2rem;
     margin-right: 1rem;
@@ -74,6 +74,14 @@ html{
     width:1.5rem;
     stroke-width: 0.2rem;
     fill:#757575;
+  }
+
+  &__block{
+    fill:#00bfa5;
+  }
+
+  &__add{
+    fill:#00bfa5;
   }
 }
 

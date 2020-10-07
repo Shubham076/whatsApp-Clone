@@ -14,6 +14,7 @@ import {
   add_message_to_room,
   mark_read_in_selected,
   mark_read_in_room,
+  update_room
 } from "../../store/actions/index";
 import { createObjectId } from "mongodb-objectid";
 import axios from "../../server";
@@ -28,6 +29,7 @@ import UIfx from "uifx"
 import sentSound from "../../sounds/send.mp3"
 import receiveSound from "../../sounds/recieves.mp3"
 import notification from "../../sounds/notification.mp3"
+import AddToContacts from "./addToContacts/add"
 
 export class Chat extends Component {
   constructor(props) {
@@ -46,13 +48,13 @@ export class Chat extends Component {
     showPicker: false,
   };
 
-  componentDidMount() {
+   componentDidMount() {
     let value = Math.floor(Math.random() * 5000);
     this.setState({ seed: value });
     this.scrollToBottom();
 
     setTimeout(() => {
-      this.props.io.on("newMessage", (data) => {
+      this.props.io.on("newMessage", async (data) => {
         if (
           this.props.currentRoom &&
           this.props.currentRoom.id === data.message.roomId
@@ -65,6 +67,7 @@ export class Chat extends Component {
         }
 
         else{
+          console.log("what ")
           this.props.addMessageToRoom(data.message);
           this.notificationSound.play();
           this.props.updateCount(data.message.roomId);
@@ -326,7 +329,7 @@ export class Chat extends Component {
                   </p>
                 </React.Fragment>
               ))}
-
+              <AddToContacts/>
               <div ref={this.chatRef}></div>
             </div>
 

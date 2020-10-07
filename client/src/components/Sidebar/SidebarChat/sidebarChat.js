@@ -61,7 +61,7 @@ class SidebarChat extends Component {
 
     // case when both room is not selected or in a diiferent room
     if(unreadMessages.length > 0){
-      this.setState({showCount:true})
+      
       let room  = this.props;
       axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
       axios.put("/markRead",{messages:unreadMessages})
@@ -77,8 +77,6 @@ class SidebarChat extends Component {
 
         this.props.markReadInSelectedRoom(unreadMessages)
         this.props.markReadInRoom(unreadMessages , this.props._id)
-
-        this.setState({showCount:false})
       })
       .catch(err=>{
 
@@ -128,7 +126,7 @@ class SidebarChat extends Component {
 
         {!this.props.addnewChat ? (
           this.props.createdBy === localStorage.getItem("contactNo") ||
-          this.props.noOfMessages > 0 ? (
+          this.props.noOfMessages > 0 || this.props.users[1].roomName ? (
             <div onClick={this.selectHandler} className="sidebar__chat">
               <img
                 className="sidebar__chat__img"
@@ -140,7 +138,7 @@ class SidebarChat extends Component {
                 {this.state.typing === true ? (
                   <div style={{ color: "#06d755", fontWeight: "bold" }}>
                     typing...
-                    {count > 0  && this.state.showCount === true? (
+                    {count > 0 ? (
                       <div>
                         <span className="unread_message_time">{lastTime}</span>
                         <span className="unread_message_count">{count}</span>
@@ -150,7 +148,7 @@ class SidebarChat extends Component {
                 ) : (
                   <div style={{fontFamily:"'Nunito' ,'Apple Color Emoji'"}}>
                     {lastMessage ? lastMessage : ""}
-                    {count > 0 && this.state.showCount === true? (
+                    {count > 0? (
                       <div>
                         <span className="unread_message_time">{lastTime}</span>
                         <span className="unread_message_count">{count}</span>

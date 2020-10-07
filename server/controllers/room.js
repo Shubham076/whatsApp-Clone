@@ -7,10 +7,6 @@ exports.addRoom = async (req, res, next) => {
   const new_room = new Room(room);
 
   try {
-    //     const checkRoom = await Room.findOne({$and:
-    //         [{'users.0.contactNo':{$eq:room.users[0].contactNo}},
-    //         {'users.1.contactNo':{$eq:room.users[1].contactNo}}
-    // ]});
     const newRoom = await new_room.save();
 
     const foundUser1 = await User.findOne({
@@ -62,3 +58,18 @@ exports.getRooms = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateRoom = async (req,res,next) => {
+  let room =  req.body.room;
+  try{
+    let foundRoom = await Room.findByIdAndUpdate(room._id , {users:room.users})
+
+    res.status(201).json({
+      message:"Success"
+    })
+
+  }
+  catch(err){
+    next(err);
+  }
+}

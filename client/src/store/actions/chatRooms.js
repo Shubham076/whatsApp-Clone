@@ -42,6 +42,13 @@ export const add_room = (room) => {
   };
 };
 
+export const update_room = (room) => {
+  return{
+    type:actionTypes.UPDATE_ROOM,
+    room:room
+  }
+}
+
 export const select_room = (selectedRoom) => {
     return{
         type:actionTypes.SELECT_ROOM,

@@ -9,6 +9,7 @@ export { set_socket, remove_io } from "./io";
 export {
   get_rooms,
   add_room,
+  update_room,
   select_room,
   add_message,
   update_count,

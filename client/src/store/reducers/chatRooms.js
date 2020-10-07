@@ -44,6 +44,22 @@ const chatRoomReducer = (state=intitalState , action) => {
                 selected:true
             }
 
+        case actionTypes.UPDATE_ROOM:{
+            let rooms = [...state.rooms];
+            let index = rooms.findIndex(r=> r._id === action.room._id);
+            rooms[index] = action.room
+            let selectedRoom = state.selectedRoom ? {...state.selectedRoom} : null;
+            if(selectedRoom && selectedRoom.id === action.room_id){
+                selectedRoom = action.room
+            }
+            return{
+                ...state,
+                rooms:rooms,
+                selectedRoom:selectedRoom
+
+            }
+        }
+
         case actionTypes.ADD_MESSAGE:{
             let room = {...state.selectedRoom};
             let messages = [...room.messages];
