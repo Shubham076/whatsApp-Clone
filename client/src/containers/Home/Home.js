@@ -9,7 +9,7 @@ import openSocket from "socket.io-client"
 const Home = (props) => {
 
     useEffect(() => {
-      let socket = openSocket('http://localhost:4000' , {query:{id : localStorage.getItem('contactNo')}})
+      let socket = openSocket('https://chatapp-node-server.herokuapp.com' , {query:{id : localStorage.getItem('contactNo')}})
       props.setSocket(socket)
 
     }, [])
