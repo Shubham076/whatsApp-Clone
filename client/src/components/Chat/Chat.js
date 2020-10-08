@@ -24,7 +24,7 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import Cross from "../../svgs/Cross";
 import Tick from "../../svgs/Tick";
-import UIfx from "uifx"
+import {Howl ,Howler} from 'howler'
 import sentSound from "../../sounds/send.mp3"
 import receiveSound from "../../sounds/recieves.mp3"
 import notification from "../../sounds/notification.mp3"
@@ -34,9 +34,9 @@ export class Chat extends Component {
   constructor(props) {
     super(props);
     this.chatRef = React.createRef();
-    this.sendSound = new UIfx(sentSound,{volume:1});
-    this.receivesound = new UIfx(receiveSound,{volume:1})
-    this.notificationSound = new UIfx(notification,{volume:1})
+    this.sendSound = new Howl({src:[sentSound],volume:1})
+    this.receivesound = new Howl({src:[receiveSound],volume:1})
+    this.notificationSound = new Howl({src:[notification],volume:1})
   }
 
   state = {

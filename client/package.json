@@ -10,6 +10,7 @@
     "dayjs": "^1.9.1",
     "emoji-mart": "^3.0.0",
     "formik": "^2.1.5",
+    "howler": "^2.2.0",
     "jwt-decode": "^3.0.0-beta.2",
     "mongodb-objectid": "^1.0.3",
     "node-sass": "^4.14.1",
@@ -21,7 +22,6 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "uifx": "^2.0.7",
     "yup": "^0.29.3"
   },
   "scripts": {
