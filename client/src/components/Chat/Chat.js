@@ -240,7 +240,7 @@ export class Chat extends Component {
       let Messages = [...this.props.currentRoom.messages];
       for (let message of Messages.reverse()) {
         if (message.sender !== localStorage.getItem("contactNo")) {
-          lastSeen = dayjs(message.createdAt).fromNow()+" "+message.createdAt;
+          lastSeen = dayjs(message.createdAt).fromNow()+" "+message.createdAt+" " +message.body;
           break;
         }
       }
