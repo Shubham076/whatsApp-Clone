@@ -143,6 +143,15 @@ export class Chat extends Component {
     this.setState({showPicker:false})
     if (this.state.message !== "") {
       let room = this.props.currentRoom;
+      this.props.io.emit("stopTyping", {
+        typing: {
+          receiver:
+            room.createdBy === localStorage.getItem("contactNo")
+              ? room.users[1].contactNo
+              : room.users[0].contactNo,
+          roomId: room.id,
+        },
+      });
 
       let newMessage = {
         _id: await createObjectId(),
