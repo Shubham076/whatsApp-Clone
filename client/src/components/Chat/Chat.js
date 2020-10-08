@@ -158,8 +158,8 @@ export class Chat extends Component {
       };
 
       newMessage.date = dayjs(newMessage.createdAt).format("D MMMM YYYY");
-      this.props.addMessage(newMessage);
       this.sendSound.play();
+      this.props.addMessage(newMessage);
       this.props.addMessageToRoom(newMessage);
       this.setState({ message: "" });
 
@@ -221,8 +221,8 @@ export class Chat extends Component {
   };
 
   render() {
-    dayjs.extend(relativeTime);
     dayjs.extend(localizedFormat);
+    dayjs.extend(relativeTime);
     let now = dayjs().format("D MMMM YYYY");
 
     // for showing timestamps between messages
@@ -240,7 +240,7 @@ export class Chat extends Component {
       let Messages = [...this.props.currentRoom.messages];
       for (let message of Messages.reverse()) {
         if (message.sender !== localStorage.getItem("contactNo")) {
-          lastSeen = dayjs(message.createdAt).fromNow();
+          lastSeen = dayjs(message.createdAt).fromNow()+" "+message.createdAt;
           break;
         }
       }
